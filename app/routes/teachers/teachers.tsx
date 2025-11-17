@@ -1,11 +1,11 @@
+import Topbar from "../../welcome/topbar";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import Topbar from "../../welcome/topbar";
 
+// Read the base app URL from Vite env var `VITE_APP_URL`.
 const APP_URL = (import.meta.env.VITE_APP_URL as string);
-console.log("APP_URL:", APP_URL);
 
-interface Student {
+interface Teacher {
   _id?: string;
   fullname: string;
   class: string;
@@ -13,62 +13,62 @@ interface Student {
   age: number;
 }
 
-export default function Students() {
-  const [students, setStudents] = useState<Student[]>([]);
+export default function Teachers() {
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchStudents = async () => {
+  const fetchTeachers = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${APP_URL}/getStudentsData`, {
+      const response = await fetch(`${APP_URL}/getTeachers`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
+      console.log("Response:", response);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log("Students data:", data);
+      console.log("Teachers data:", data);
 
-      // Handle both array and object with data property
-      const studentsList = Array.isArray(data) ? data : data.data || [];
-      setStudents(studentsList);
+      const teachersList = Array.isArray(data) ? data : data.data || [];
+      setTeachers(teachersList);
       setError(null);
     } catch (error) {
-      console.error("Error fetching students:", error);
+      console.error("Error fetching teachers:", error);
       const errorMessage =
         error instanceof Error
           ? error.message
-          : "Failed to fetch student data. Please check if the backend server is running.";
+          : "Failed to fetch teacher data. Please check if the backend server is running.";
       setError(errorMessage);
-      setStudents([]);
+      setTeachers([]);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchStudents();
+    fetchTeachers();
   }, []);
 
-  const handleDelete = async (studentId: string | undefined) => {
-    if (!studentId) {
-      alert("Student ID is missing");
+  const handleDelete = async (teacherId: string | undefined) => {
+    if (!teacherId) {
+      alert("Teacher ID is missing");
       return;
     }
 
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this student?"
+      "Are you sure you want to delete this teacher?"
     );
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(`${APP_URL}/deleteStudent/${studentId}`, {
+      const response = await fetch(`${APP_URL}/deleteTeacher/${teacherId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -79,12 +79,11 @@ export default function Students() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      console.log("Student deleted successfully");
-      // Refresh the list
-      fetchStudents();
+      console.log("Teacher deleted successfully");
+      fetchTeachers();
     } catch (error) {
-      console.error("Error deleting student:", error);
-      alert("Failed to delete student. Please try again.");
+      console.error("Error deleting teacher:", error);
+      alert("Failed to delete teacher. Please try again.");
     }
   };
 
@@ -93,12 +92,12 @@ export default function Students() {
       <Topbar />
       <div className="container mx-auto p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold">Students Management</h2>
+          <h2 className="text-3xl font-bold">Teachers Management</h2>
           <Link
-            to="/students/add"
+            to="/teachers/add"
             className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
           >
-            + Add Student
+            + Add Teacher
           </Link>
         </div>
 
@@ -110,7 +109,7 @@ export default function Students() {
 
         {loading && (
           <div className="text-center py-8">
-            <p className="text-gray-600">Loading students...</p>
+            <p className="text-gray-600">Loading teachers...</p>
           </div>
         )}
 
@@ -128,23 +127,23 @@ export default function Students() {
                   </tr>
                 </thead>
                 <tbody>
-                  {students.length > 0 ? (
-                    students.map((student) => (
-                      <tr key={student._id} className="border-b hover:bg-gray-50">
-                        <td className="px-6 py-3">{student.fullname}</td>
-                        <td className="px-6 py-3">{student.class}</td>
-                        <td className="px-6 py-3">{student.gender}</td>
-                        <td className="px-6 py-3">{student.age}</td>
+                  {teachers.length > 0 ? (
+                    teachers.map((teacher) => (
+                      <tr key={teacher._id} className="border-b hover:bg-gray-50">
+                        <td className="px-6 py-3">{teacher.fullname}</td>
+                        <td className="px-6 py-3">{teacher.class}</td>
+                        <td className="px-6 py-3">{teacher.gender}</td>
+                        <td className="px-6 py-3">{teacher.age}</td>
                         <td className="px-6 py-3">
                           <div className="flex gap-2">
                             <Link
-                              to={`/students/edit/${student._id}`}
+                              to={`/teachers/edit/${teacher._id}`}
                               className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition text-sm"
                             >
                               Edit
                             </Link>
                             <button
-                              onClick={() => handleDelete(student._id)}
+                              onClick={() => handleDelete(teacher._id)}
                               className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition text-sm"
                             >
                               Delete
@@ -156,7 +155,7 @@ export default function Students() {
                   ) : (
                     <tr className="border-b hover:bg-gray-50">
                       <td colSpan={5} className="px-6 py-3 text-center text-gray-500">
-                        No students added yet
+                        No teachers added yet
                       </td>
                     </tr>
                   )}

@@ -6,6 +6,6 @@ export default [
   route("students/add", "routes/students/student-form.tsx"),
   route("students/edit/:id", "routes/students/student-edit.tsx"),
   route("deleteStudent/:id", "routes/students/student-delete.tsx"),
-  route("teachers", "routes/teachers.tsx"),
+  route("teachers", "routes/teachers/teachers.tsx"),
   route("principal", "routes/principal.tsx"),
 ] satisfies RouteConfig;

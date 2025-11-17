@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import Topbar from "../../welcome/topbar";
 
+const APP_URL = (import.meta.env.VITE_APP_URL as string);
+
 export default function StudentDelete() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -15,8 +17,7 @@ export default function StudentDelete() {
       }
 
       try {
-        const response = await fetch(
-          `http://localhost:3000/deleteStudent/${id}`,
+        const response = await fetch(`${APP_URL}/deleteStudent/${id}`,
           {
             method: "DELETE",
             headers: {

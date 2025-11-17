@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import Topbar from "../../welcome/topbar";
+const APP_URL = (import.meta.env.VITE_APP_URL as string);
 
 interface Student {
   _id?: string;
@@ -32,7 +33,7 @@ export default function StudentEditForm() {
     try {
       setLoading(true);
       
-      const response = await fetch(`http://localhost:3000/getStudentsData/${id}`);
+      const response = await fetch(`${APP_URL}/getStudentsData/${id}`);
       const data = await response.json();
       
       console.log("Raw API data:", data);
@@ -97,8 +98,7 @@ export default function StudentEditForm() {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:3000/updateStudent/${id}`,
+      const response = await fetch(`${APP_URL}/updateStudent/${id}`,
         {
           method: "PUT",
           headers: {
